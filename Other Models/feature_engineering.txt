@@ -1,0 +1,22 @@
+import pandas as pd
+import featuretools as ft
+import tsfresh
+from tsfresh import extract_features
+from tsfresh.utilities.dataframe_functions import make_forecasting_frame
+from tsfresh.utilities.dataframe_functions import impute
+# Load the data from the CSV file in Google Drive folder into a pandas DataFrame
+df = pd.read_csv ("C://Users//ARRF//Desktop//Maruthi//Data//wind_data.csv", sep = ',', index_col = 0, parse_dates = True, decimal = '.') #set the 'datetime' column as index, separation along ',', the index column is the first column, the decimal number is '.'
+data
+# Create a forecasting frame which is needed for feature extraction
+df_shift, y = make_forecasting_frame(df["winddir"], kind="wind_direction", max_timeshift=100, rolling_direction=1) # transform the time series data into a format suitable for feature extraction
+# Extract features
+X = extract_features(df_shift, column_id="id", column_sort="time", column_value="value", impute_function=impute,
+                     show_warnings=False)
+print(X.head())
+df_shift_speed, y_speed = make_forecasting_frame(df["windspeed"], kind="wind_speed", max_timeshift=10, rolling_direction=1)
+X_speed = extract_features(df_shift_speed, column_id="id", column_sort="time", column_value="value", impute_function=impute, show_warnings=False)
+df_shift_dir, y_dir = make_forecasting_frame(df["winddir"], kind="wind_direction", max_timeshift=10, rolling_direction=1)
+X_dir = extract_features(df_shift_dir, column_id="id", column_sort="time", column_value="value", impute_function=impute, show_warnings=False)
+X_combined = pd.concat([X_speed, X_dir], axis=1)
+X_combined
+X_combined.to_csv("C://Users//ARRF//Desktop//Maruthi//Data//wind_data_features.csv", sep = ',', index = 0,  decimal = '.')
